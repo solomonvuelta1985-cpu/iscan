@@ -14,8 +14,15 @@ CREATE TABLE IF NOT EXISTS certificate_of_live_birth (
     id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     -- Registry Information
-    registry_no VARCHAR(100) NOT NULL UNIQUE,
+    registry_no VARCHAR(100) NULL,
     date_of_registration DATE NOT NULL,
+
+    -- Child Information
+    child_first_name VARCHAR(100) NULL,
+    child_middle_name VARCHAR(100) NULL,
+    child_last_name VARCHAR(100) NULL,
+    child_date_of_birth DATE NULL,
+    child_place_of_birth VARCHAR(255) NULL,
 
     -- Birth Information
     type_of_birth ENUM('Single', 'Twin', 'Triplets', 'Quadruplets', 'Other') NOT NULL DEFAULT 'Single',

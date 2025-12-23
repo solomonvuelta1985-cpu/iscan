@@ -36,6 +36,14 @@ try {
     // Sanitize input data
     $registry_no = sanitize_input($_POST['registry_no'] ?? '');
     $date_of_registration = sanitize_input($_POST['date_of_registration'] ?? '');
+
+    // Child information
+    $child_first_name = sanitize_input($_POST['child_first_name'] ?? '');
+    $child_middle_name = sanitize_input($_POST['child_middle_name'] ?? null);
+    $child_last_name = sanitize_input($_POST['child_last_name'] ?? '');
+    $child_date_of_birth = sanitize_input($_POST['child_date_of_birth'] ?? '');
+    $child_place_of_birth = sanitize_input($_POST['child_place_of_birth'] ?? '');
+
     $type_of_birth = sanitize_input($_POST['type_of_birth'] ?? '');
     $type_of_birth_other = sanitize_input($_POST['type_of_birth_other'] ?? null);
     $birth_order = sanitize_input($_POST['birth_order'] ?? null);
@@ -58,21 +66,13 @@ try {
     // Validation
     $errors = [];
 
-    // Validate required fields
-    if (empty($registry_no)) {
-        $errors[] = "Registry number is required.";
-    } else {
+    // Validate registry number if provided
+    if (!empty($registry_no)) {
         // Check if registry number already exists (excluding current record)
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM certificate_of_live_birth WHERE registry_no = :registry_no AND id != :id");
         $stmt->execute([':registry_no' => $registry_no, ':id' => $record_id]);
         if ($stmt->fetchColumn() > 0) {
             $errors[] = "Registry number already exists.";
-        }
-
-        // Validate registry number format
-        $registry_validation = validate_registry_number($registry_no);
-        if ($registry_validation !== true) {
-            $errors[] = $registry_validation;
         }
     }
 
@@ -92,6 +92,23 @@ try {
 
     if (empty($mother_last_name)) {
         $errors[] = "Mother's last name is required.";
+    }
+
+    // Validate child information
+    if (empty($child_first_name)) {
+        $errors[] = "Child's first name is required.";
+    }
+
+    if (empty($child_last_name)) {
+        $errors[] = "Child's last name is required.";
+    }
+
+    if (empty($child_date_of_birth)) {
+        $errors[] = "Child's date of birth is required.";
+    }
+
+    if (empty($child_place_of_birth)) {
+        $errors[] = "Child's place of birth (Barangay/Hospital) is required.";
     }
 
     // Handle PDF file upload (optional for update)
@@ -133,6 +150,13 @@ try {
     // Convert date format to MySQL date format
     $date_of_registration = date('Y-m-d', strtotime($date_of_registration));
 
+    // Convert child date of birth format
+    if (!empty($child_date_of_birth)) {
+        $child_date_of_birth = date('Y-m-d', strtotime($child_date_of_birth));
+    } else {
+        $child_date_of_birth = null;
+    }
+
     // Convert date format if provided
     if (!empty($date_of_marriage)) {
         $date_of_marriage = date('Y-m-d', strtotime($date_of_marriage));
@@ -148,6 +172,11 @@ try {
         $sql = "UPDATE certificate_of_live_birth SET
                     registry_no = :registry_no,
                     date_of_registration = :date_of_registration,
+                    child_first_name = :child_first_name,
+                    child_middle_name = :child_middle_name,
+                    child_last_name = :child_last_name,
+                    child_date_of_birth = :child_date_of_birth,
+                    child_place_of_birth = :child_place_of_birth,
                     type_of_birth = :type_of_birth,
                     type_of_birth_other = :type_of_birth_other,
                     birth_order = :birth_order,
@@ -171,6 +200,11 @@ try {
         $stmt->execute([
             ':registry_no' => $registry_no,
             ':date_of_registration' => $date_of_registration,
+            ':child_first_name' => $child_first_name,
+            ':child_middle_name' => $child_middle_name,
+            ':child_last_name' => $child_last_name,
+            ':child_date_of_birth' => $child_date_of_birth,
+            ':child_place_of_birth' => $child_place_of_birth,
             ':type_of_birth' => $type_of_birth,
             ':type_of_birth_other' => $type_of_birth_other,
             ':birth_order' => $birth_order,

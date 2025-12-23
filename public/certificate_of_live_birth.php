@@ -79,12 +79,12 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
            CONTAINER & LAYOUT
            ======================================== */
         .page-container {
-            max-width: 1600px;
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 0;
             background-color: #ffffff;
-            border-radius: clamp(4px, 0.8vw, 6px);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            padding: clamp(12px, 2vw, 20px);
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
         }
 
         /* ========================================
@@ -596,7 +596,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             padding: 0;
             padding-top: 64px;
             min-height: 100vh;
-            background: #f8fafc;
+            background: #ffffff;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -610,7 +610,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         .system-header {
             background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
             padding: clamp(12px, 2vw, 16px) clamp(15px, 2.5vw, 20px);
-            margin: clamp(-12px, -2vw, -20px) clamp(-12px, -2vw, -20px) clamp(15px, 2.5vw, 20px);
+            margin: 0 0 clamp(15px, 2.5vw, 20px) 0;
             border-radius: 0;
             display: flex;
             align-items: center;
@@ -657,7 +657,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         .page-header {
             text-align: center;
-            margin-bottom: clamp(15px, 2.5vw, 20px);
+            margin: 0 clamp(15px, 2.5vw, 20px) clamp(15px, 2.5vw, 20px) clamp(15px, 2.5vw, 20px);
             padding-bottom: clamp(10px, 2vw, 15px);
             border-bottom: 2px solid #dee2e6;
         }
@@ -686,7 +686,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
             gap: clamp(12px, 2vw, 20px);
-            margin-top: clamp(12px, 2vw, 18px);
+            margin: 0 clamp(15px, 2.5vw, 20px);
+            padding-bottom: clamp(15px, 2.5vw, 20px);
         }
 
         @media (max-width: 1024px) {
@@ -825,6 +826,16 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             flex-wrap: wrap;
         }
 
+        .sticky-buttons {
+            position: sticky;
+            bottom: 0;
+            background: #ffffff;
+            padding: clamp(15px, 2.5vw, 20px) 0;
+            margin-top: clamp(20px, 3vw, 30px);
+            z-index: 50;
+            border-top: 2px solid #dee2e6;
+        }
+
         .btn {
             padding: clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 15px);
             border-radius: clamp(3px, 0.6vw, 4px);
@@ -895,6 +906,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             margin-bottom: clamp(10px, 1.8vw, 12px);
             padding-bottom: clamp(8px, 1.5vw, 10px);
             border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .pdf-preview-title {
@@ -906,10 +920,155 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             gap: clamp(5px, 1vw, 6px);
         }
 
+        .toggle-pdf-btn {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #495057;
+        }
+
+        .toggle-pdf-btn:hover {
+            background: #f8f9fa;
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .toggle-pdf-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* PDF Column hidden state */
+        .pdf-column.hidden {
+            display: none;
+        }
+
+        /* Form layout when PDF is hidden */
+        .form-layout.pdf-hidden {
+            grid-template-columns: 1fr;
+        }
+
+        /* Floating toggle button when PDF is hidden */
+        .floating-toggle-btn {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #0d6efd;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .floating-toggle-btn:hover {
+            background: #0b5ed7;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 16px rgba(13, 110, 253, 0.4);
+        }
+
+        .floating-toggle-btn.show {
+            display: flex;
+        }
+
+        .floating-toggle-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
         .pdf-preview-title svg {
             width: clamp(16px, 2vw, 18px);
             height: clamp(16px, 2vw, 18px);
             stroke: #0d6efd;
+        }
+
+        /* Upload Scanner Container */
+        .upload-scanner-container {
+            display: flex;
+            gap: clamp(8px, 1.5vw, 12px);
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .upload-scanner-container input[type="file"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-scan {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: #ffffff;
+            border: none;
+            padding: clamp(8px, 1.5vw, 10px) clamp(14px, 2.2vw, 18px);
+            border-radius: clamp(4px, 0.8vw, 6px);
+            font-size: clamp(0.75rem, 1.4vw, 0.875rem);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: clamp(5px, 1vw, 8px);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+            white-space: nowrap;
+        }
+
+        .btn-scan:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ab886 100%);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-scan:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-scan svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .scan-status {
+            margin-top: clamp(8px, 1.5vw, 10px);
+            padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 14px);
+            border-radius: clamp(4px, 0.8vw, 6px);
+            font-size: clamp(0.75rem, 1.4vw, 0.8125rem);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scan-status.scanning {
+            background-color: #cfe2ff;
+            border: 1px solid #6ea8fe;
+            color: #084298;
+        }
+
+        .scan-status.success {
+            background-color: #d1e7dd;
+            border: 1px solid #a3cfbb;
+            color: #0f5132;
+        }
+
+        .scan-status.error {
+            background-color: #f8d7da;
+            border: 1px solid #f1aeb5;
+            color: #842029;
         }
 
         .pdf-upload-area {
@@ -1099,6 +1258,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 margin-left: 0;
                 padding: 0;
                 padding-top: 70px;
+                background: #ffffff;
             }
 
             .sidebar-collapsed .content {
@@ -1106,7 +1266,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             }
 
             .page-container {
-                padding: clamp(10px, 1.8vw, 14px);
+                padding: 0;
             }
 
             /* Disable tooltips on mobile */
@@ -1147,7 +1307,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 flex-direction: column;
                 text-align: center;
                 gap: clamp(8px, 1.5vw, 12px);
-                margin-top: 0;
+                margin: 0 0 clamp(12px, 2vw, 15px) 0;
             }
 
             .system-logo {
@@ -1455,17 +1615,16 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
                         <div class="form-group">
                             <label for="registry_no">
-                                Registry Number <span class="required">*</span>
+                                Registry Number
                             </label>
                             <input
                                 type="text"
                                 id="registry_no"
                                 name="registry_no"
-                                required
-                                placeholder="Enter registry number (e.g., REG-2025-00001)"
+                                placeholder="Enter registry number (e.g., REG-2025-00001 or single digit)"
                                 value="<?php echo $edit_mode ? htmlspecialchars($record['registry_no']) : ''; ?>"
                             >
-                            <span class="help-text">Unique identifier for this certificate</span>
+                            <span class="help-text">Optional - Can be any format including single digit numbers</span>
                         </div>
 
                         <div class="form-group">
@@ -1479,6 +1638,112 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                                 required
                                 value="<?php echo $edit_mode ? date('Y-m-d', strtotime($record['date_of_registration'])) : ''; ?>"
                             >
+                        </div>
+
+                        <!-- Child's Name -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="child_first_name">
+                                    Child's First Name <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="child_first_name"
+                                    name="child_first_name"
+                                    required
+                                    placeholder="Enter child's first name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_first_name'] ?? '') : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="child_middle_name">
+                                    Child's Middle Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="child_middle_name"
+                                    name="child_middle_name"
+                                    placeholder="Enter child's middle name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_middle_name'] ?? '') : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="child_last_name">
+                                    Child's Last Name <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="child_last_name"
+                                    name="child_last_name"
+                                    required
+                                    placeholder="Enter child's last name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_last_name'] ?? '') : ''; ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="form-group">
+                            <label for="child_date_of_birth">
+                                Child's Date of Birth <span class="required">*</span>
+                            </label>
+                            <input
+                                type="date"
+                                id="child_date_of_birth"
+                                name="child_date_of_birth"
+                                required
+                                value="<?php echo $edit_mode ? htmlspecialchars($record['child_date_of_birth'] ?? '') : ''; ?>"
+                            >
+                        </div>
+
+                        <!-- Place of Birth -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="child_place_of_birth">
+                                    Barangay/Hospital <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="child_place_of_birth"
+                                    name="child_place_of_birth"
+                                    required
+                                    placeholder="Enter barangay or hospital name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_place_of_birth'] ?? '') : ''; ?>"
+                                >
+                                <span class="help-text">Enter the specific barangay or hospital where the child was born</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="municipality">
+                                    Municipality
+                                </label>
+                                <input
+                                    type="text"
+                                    id="municipality"
+                                    name="municipality"
+                                    value="Baggao"
+                                    readonly
+                                    disabled
+                                    style="background-color: #e9ecef; cursor: not-allowed;"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="province">
+                                    Province
+                                </label>
+                                <input
+                                    type="text"
+                                    id="province"
+                                    name="province"
+                                    value="Cagayan"
+                                    readonly
+                                    disabled
+                                    style="background-color: #e9ecef; cursor: not-allowed;"
+                                >
+                            </div>
                         </div>
                     </div>
 
@@ -1696,7 +1961,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="button-group">
+                    <div class="button-group sticky-buttons">
                         <button type="submit" class="btn btn-primary">
                             <i data-lucide="save"></i>
                             <?php echo $edit_mode ? 'Update Record' : 'Save Record'; ?>
@@ -1720,26 +1985,41 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 </div>
 
                 <!-- RIGHT COLUMN: PDF Preview -->
-                <div class="pdf-column">
+                <div class="pdf-column" id="pdfColumn">
                     <div class="pdf-preview-header">
                         <h3 class="pdf-preview-title">
                             <i data-lucide="file-text"></i>
                             Certificate PDF Upload
                         </h3>
+                        <button type="button" id="togglePdfBtn" class="toggle-pdf-btn" title="Hide PDF Upload">
+                            <i data-lucide="eye-off"></i>
+                        </button>
                     </div>
 
                     <div class="form-group">
                         <label for="pdf_file">
                             Upload PDF Certificate <?php echo !$edit_mode ? '<span class="required">*</span>' : ''; ?>
                         </label>
-                        <input
-                            type="file"
-                            id="pdf_file"
-                            name="pdf_file"
-                            accept=".pdf"
-                            <?php echo !$edit_mode ? 'required' : ''; ?>
-                        >
+
+                        <div class="upload-scanner-container">
+                            <input
+                                type="file"
+                                id="pdf_file"
+                                name="pdf_file"
+                                accept=".pdf"
+                                <?php echo !$edit_mode ? 'required' : ''; ?>
+                            >
+
+                            <button type="button" id="scanDocumentBtn" class="btn-scan" title="Scan using DS-530 II">
+                                <i data-lucide="scan"></i>
+                                Scan Document
+                            </button>
+                        </div>
+
+                        <div id="scanStatus" class="scan-status hidden"></div>
+
                         <span class="help-text">Maximum file size: 10MB. Only PDF files are accepted.</span>
+                        <span class="help-text">Use the "Scan Document" button to scan directly from DS-530 II scanner.</span>
                         <?php if ($edit_mode && !empty($record['pdf_filename'])): ?>
                             <span class="help-text">Leave empty to keep existing file.</span>
                         <?php endif; ?>
@@ -1773,6 +2053,12 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 </div>
             </div>
         </form>
+
+        <!-- Floating Toggle Button (shown when PDF is hidden) -->
+        <button type="button" id="floatingToggleBtn" class="floating-toggle-btn" title="Show PDF Upload">
+            <i data-lucide="eye"></i>
+        </button>
+
         </div> <!-- Close page-container -->
     </div> <!-- Close content -->
 
@@ -1952,6 +2238,71 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             // Initialize Lucide icons
             lucide.createIcons();
 
+            // PDF Column Toggle Functionality
+            const pdfColumn = document.getElementById('pdfColumn');
+            const formLayout = document.querySelector('.form-layout');
+            const togglePdfBtn = document.getElementById('togglePdfBtn');
+            const floatingToggleBtn = document.getElementById('floatingToggleBtn');
+            let pdfVisible = true;
+
+            // Load saved state from localStorage
+            const savedState = localStorage.getItem('pdfColumnVisible');
+            if (savedState !== null) {
+                pdfVisible = savedState === 'true';
+                if (!pdfVisible) {
+                    pdfColumn.classList.add('hidden');
+                    formLayout.classList.add('pdf-hidden');
+                    floatingToggleBtn.classList.add('show');
+                }
+            }
+
+            // Toggle PDF button click handler
+            if (togglePdfBtn) {
+                togglePdfBtn.addEventListener('click', function() {
+                    pdfVisible = !pdfVisible;
+
+                    if (pdfVisible) {
+                        // Show PDF column
+                        pdfColumn.classList.remove('hidden');
+                        formLayout.classList.remove('pdf-hidden');
+                        floatingToggleBtn.classList.remove('show');
+                        togglePdfBtn.innerHTML = '<i data-lucide="eye-off"></i>';
+                        togglePdfBtn.title = 'Hide PDF Upload';
+                    } else {
+                        // Hide PDF column
+                        pdfColumn.classList.add('hidden');
+                        formLayout.classList.add('pdf-hidden');
+                        floatingToggleBtn.classList.add('show');
+                        togglePdfBtn.innerHTML = '<i data-lucide="eye"></i>';
+                        togglePdfBtn.title = 'Show PDF Upload';
+                    }
+
+                    // Reinitialize Lucide icons for the toggle button
+                    lucide.createIcons();
+
+                    // Save state to localStorage
+                    localStorage.setItem('pdfColumnVisible', pdfVisible);
+                });
+            }
+
+            // Floating toggle button click handler
+            if (floatingToggleBtn) {
+                floatingToggleBtn.addEventListener('click', function() {
+                    pdfVisible = true;
+                    pdfColumn.classList.remove('hidden');
+                    formLayout.classList.remove('pdf-hidden');
+                    floatingToggleBtn.classList.remove('show');
+                    togglePdfBtn.innerHTML = '<i data-lucide="eye-off"></i>';
+                    togglePdfBtn.title = 'Hide PDF Upload';
+
+                    // Reinitialize Lucide icons
+                    lucide.createIcons();
+
+                    // Save state to localStorage
+                    localStorage.setItem('pdfColumnVisible', 'true');
+                });
+            }
+
             if (!editMode) {
                 const now = new Date();
                 const year = now.getFullYear();
@@ -1961,6 +2312,149 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 const defaultDate = `${year}-${month}-${day}`;
                 document.getElementById('date_of_registration').value = defaultDate;
             }
+
+            // Scanner Functionality for DS-530 II
+            const scanDocumentBtn = document.getElementById('scanDocumentBtn');
+            const scanStatus = document.getElementById('scanStatus');
+            const pdfFileInput = document.getElementById('pdf_file');
+
+            if (scanDocumentBtn) {
+                scanDocumentBtn.addEventListener('click', async function() {
+                    try {
+                        // Show scanning status
+                        scanStatus.className = 'scan-status scanning';
+                        scanStatus.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Initializing scanner...';
+                        scanStatus.classList.remove('hidden');
+                        lucide.createIcons();
+
+                        // Check if scanner service is available
+                        // This will need to be replaced with actual scanner SDK integration
+                        // For now, this is a placeholder that shows how it would work
+
+                        // Option 1: Using Dynamic Web TWAIN (Commercial SDK)
+                        // Option 2: Using a local scanner service/bridge
+                        // Option 3: Using browser's getUserMedia with document scanner
+
+                        const scannerAvailable = await checkScannerAvailability();
+
+                        if (!scannerAvailable) {
+                            throw new Error('DS-530 II scanner not detected. Please ensure the scanner is connected and drivers are installed.');
+                        }
+
+                        // Update status
+                        scanStatus.innerHTML = '<i data-lucide="loader-2" class="spin"></i> Scanning document...';
+                        lucide.createIcons();
+
+                        // Perform scan operation
+                        const scannedFile = await performScan();
+
+                        if (scannedFile) {
+                            // Create a File object from the scanned data
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(scannedFile);
+                            pdfFileInput.files = dataTransfer.files;
+
+                            // Show success message
+                            scanStatus.className = 'scan-status success';
+                            scanStatus.innerHTML = '<i data-lucide="check-circle"></i> Document scanned successfully! PDF attached.';
+                            lucide.createIcons();
+
+                            // Trigger change event to update preview if exists
+                            pdfFileInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                            // Hide status after 5 seconds
+                            setTimeout(() => {
+                                scanStatus.classList.add('hidden');
+                            }, 5000);
+                        }
+
+                    } catch (error) {
+                        // Show error message
+                        scanStatus.className = 'scan-status error';
+                        scanStatus.innerHTML = `<i data-lucide="alert-circle"></i> ${error.message}`;
+                        lucide.createIcons();
+
+                        // Hide error after 10 seconds
+                        setTimeout(() => {
+                            scanStatus.classList.add('hidden');
+                        }, 10000);
+                    }
+                });
+            }
+
+            // Check if scanner is available
+            async function checkScannerAvailability() {
+                // TODO: Implement actual scanner detection
+                // This would connect to the scanner service/SDK
+
+                // For demonstration, check if scanner service is running
+                // You would replace this with actual scanner SDK calls
+                try {
+                    // Example: Check if local scanner service is running
+                    const response = await fetch('http://localhost:18622/scanner/status', {
+                        method: 'GET',
+                        mode: 'cors'
+                    }).catch(() => null);
+
+                    if (response && response.ok) {
+                        const data = await response.json();
+                        return data.available && data.model.includes('DS-530');
+                    }
+
+                    // If service is not available, show instructions
+                    return false;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            // Perform scan operation
+            async function performScan() {
+                // TODO: Implement actual scanning logic
+                // This would use the scanner SDK (Dynamic Web TWAIN, etc.)
+
+                try {
+                    // Example: Call local scanner service
+                    const response = await fetch('http://localhost:18622/scanner/scan', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            scanner: 'DS-530 II',
+                            format: 'pdf',
+                            quality: 'high',
+                            colorMode: 'color',
+                            resolution: 300
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Scanning failed. Please try again.');
+                    }
+
+                    const blob = await response.blob();
+                    const filename = `scanned_${Date.now()}.pdf`;
+
+                    return new File([blob], filename, { type: 'application/pdf' });
+                } catch (error) {
+                    throw new Error('Scanner communication error: ' + error.message);
+                }
+            }
+
+            // Add CSS for spinning animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                .spin {
+                    animation: spin 1s linear infinite;
+                    display: inline-block;
+                }
+            `;
+            document.head.appendChild(style);
 
             // Sidebar functionality
             const sidebar = document.getElementById('sidebar');
