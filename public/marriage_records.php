@@ -162,8 +162,6 @@ $has_active_filters = !empty($_GET['marriage_date_from']) || !empty($_GET['marri
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <?php include '../includes/sidebar_styles.php'; ?>
-
     <style>
         /* Reset & Base */
         * {

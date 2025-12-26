@@ -58,8 +58,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <?php include '../includes/sidebar_styles.php'; ?>
-
     <style>
         /* ========================================
            RESET & BASE STYLES
@@ -459,7 +457,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         .sidebar-menu {
             list-style: none;
-            padding: 12px 0;
+            padding: 16px 0;
             margin: 0;
             flex: 1;
             overflow-y: auto;
@@ -482,16 +480,17 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         .sidebar-menu li a {
             display: flex;
             align-items: center;
-            padding: 10px 16px;
-            margin: 2px 12px;
+            padding: 14px 18px;
+            margin: 4px 14px;
             color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 10px;
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: 500;
             white-space: nowrap;
             position: relative;
+            gap: 12px;
         }
 
         .sidebar-menu li a:hover {
@@ -516,23 +515,26 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         .sidebar-menu li a.active::before {
             content: '';
             position: absolute;
-            left: -12px;
+            left: -14px;
             top: 50%;
             transform: translateY(-50%);
             width: 3px;
-            height: 22px;
+            height: 28px;
             background: var(--accent-color);
             border-radius: 0 4px 4px 0;
             box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
         }
 
         .sidebar-menu li a [data-lucide] {
-            min-width: 28px;
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            flex-shrink: 0;
             transition: all 0.3s ease;
         }
 
         .sidebar-menu li a:hover [data-lucide] {
-            transform: scale(1.08);
+            transform: scale(1.1);
         }
 
         .sidebar-collapsed .sidebar-menu li a {
@@ -550,16 +552,16 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
         .sidebar-divider {
             border-top: 1px solid rgba(148, 163, 184, 0.15);
-            margin: 12px 16px;
+            margin: 18px 16px;
         }
 
         .sidebar-heading {
-            padding: 14px 20px 8px;
-            font-size: 10.5px;
+            padding: 18px 20px 10px;
+            font-size: 11px;
             text-transform: uppercase;
             color: #64748b;
             font-weight: 600;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
         }
 
         .sidebar-collapsed .sidebar-heading {
@@ -1290,8 +1292,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
             .sidebar-collapsed .sidebar-menu li a {
                 justify-content: flex-start;
-                padding: 11px 16px;
-                margin: 2px 12px;
+                padding: 14px 18px;
+                margin: 4px 14px;
+                gap: 12px;
             }
 
             /* User Profile Dropdown - Mobile adjustments */
@@ -1409,155 +1412,11 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
-    <div class="mobile-header">
-        <div class="mobile-header-content">
-            <div>
-                <h4><i data-lucide="file-badge"></i> Civil Registry</h4>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <!-- User Profile Dropdown (Mobile) -->
-                <div class="user-profile-dropdown">
-                    <button class="user-profile-btn" id="mobileUserProfileBtn" type="button">
-                        <div class="user-avatar">AU</div>
-                    </button>
+    <?php include '../includes/mobile_header.php'; ?>
 
-                    <div class="user-dropdown-menu" id="mobileUserDropdownMenu">
-                        <div class="dropdown-header">
-                            <div class="dropdown-user-info">
-                                <div class="user-avatar large">AU</div>
-                                <div>
-                                    <div class="dropdown-user-name">Admin User</div>
-                                    <div class="dropdown-user-email">admin</div>
-                                    <span class="dropdown-user-badge">ADMIN</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item logout-item">
-                            <i data-lucide="log-out"></i>
-                            <span>Logout</span>
-                        </a>
-                    </div>
-                </div>
-                <button type="button" id="mobileSidebarToggle">
-                    <i data-lucide="menu"></i>
-                </button>
-            </div>
-        </div>
-    </div>
+    <?php include '../includes/sidebar_nav.php'; ?>
 
-    <!-- Sidebar Overlay for Mobile -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h4><i data-lucide="file-badge"></i> <span>Civil Registry</span></h4>
-        </div>
-
-        <ul class="sidebar-menu">
-            <!-- Main Section -->
-            <li class="sidebar-heading">Overview</li>
-            <li>
-                <a href="../admin/dashboard.php" title="Dashboard">
-                    <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
-                </a>
-            </li>
-
-            <!-- Certificates Section -->
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-heading">Certificates</li>
-            <li>
-                <a href="certificate_of_live_birth.php" class="active" title="Birth Certificates">
-                    <i data-lucide="baby"></i> <span>Birth Certificates</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Marriage Certificates">
-                    <i data-lucide="heart"></i> <span>Marriage Certificates</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Death Certificates">
-                    <i data-lucide="cross"></i> <span>Death Certificates</span>
-                </a>
-            </li>
-
-            <!-- Records Section -->
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-heading">Management</li>
-            <li>
-                <a href="#" title="Search Records">
-                    <i data-lucide="file-search"></i> <span>Search Records</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Reports">
-                    <i data-lucide="bar-chart-3"></i> <span>Reports</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Archives">
-                    <i data-lucide="archive"></i> <span>Archives</span>
-                </a>
-            </li>
-
-            <!-- System Section -->
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-heading">System</li>
-            <li>
-                <a href="#" title="Users">
-                    <i data-lucide="users"></i> <span>Users</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Settings">
-                    <i data-lucide="settings"></i> <span>Settings</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Top Navigation Bar (Desktop) -->
-    <div class="top-navbar" id="topNavbar">
-        <button type="button" id="sidebarCollapse" title="Toggle Sidebar">
-            <i data-lucide="menu"></i>
-        </button>
-        <div class="top-navbar-info">
-            <span class="welcome-text">Welcome, Admin User</span>
-        </div>
-
-        <!-- User Profile Dropdown -->
-        <div class="user-profile-dropdown">
-            <button class="user-profile-btn" id="userProfileBtn" type="button">
-                <div class="user-avatar">AU</div>
-                <div class="user-profile-info">
-                    <span class="user-name">Admin User</span>
-                    <span class="user-role">Administrator</span>
-                </div>
-                <i data-lucide="chevron-down" class="dropdown-arrow"></i>
-            </button>
-
-            <div class="user-dropdown-menu" id="userDropdownMenu">
-                <div class="dropdown-header">
-                    <div class="dropdown-user-info">
-                        <div class="user-avatar large">AU</div>
-                        <div>
-                            <div class="dropdown-user-name">Admin User</div>
-                            <div class="dropdown-user-email">admin</div>
-                            <span class="dropdown-user-badge">ADMIN</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item logout-item">
-                    <i data-lucide="log-out"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <?php include '../includes/top_navbar.php'; ?>
 
     <!-- Main Content Area -->
     <div class="content">
@@ -2460,153 +2319,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 }
             `;
             document.head.appendChild(style);
-
-            // Sidebar functionality
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const sidebarCollapse = document.getElementById('sidebarCollapse');
-            const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
-            const body = document.body;
-
-            // Desktop: Toggle sidebar collapse/expand
-            if (sidebarCollapse) {
-                sidebarCollapse.addEventListener('click', function() {
-                    body.classList.toggle('sidebar-collapsed');
-
-                    // Save state to localStorage
-                    const isCollapsed = body.classList.contains('sidebar-collapsed');
-                    localStorage.setItem('sidebarCollapsed', isCollapsed);
-                });
-            }
-
-            // Mobile: Toggle sidebar visibility
-            if (mobileSidebarToggle) {
-                mobileSidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    sidebarOverlay.classList.toggle('active');
-                    body.classList.toggle('sidebar-open');
-                });
-            }
-
-            // Close sidebar when clicking overlay
-            if (sidebarOverlay) {
-                sidebarOverlay.addEventListener('click', function() {
-                    sidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    body.classList.remove('sidebar-open');
-                });
-            }
-
-            // Close mobile sidebar when clicking a menu link
-            document.querySelectorAll('.sidebar-menu a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // Add click animation
-                    this.style.transition = 'all 0.15s ease';
-                    this.style.transform = 'scale(0.96) translateX(3px)';
-
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-
-                    if (window.innerWidth <= 768) {
-                        sidebar.classList.remove('active');
-                        sidebarOverlay.classList.remove('active');
-                        body.classList.remove('sidebar-open');
-                    }
-                });
-            });
-
-            // Restore sidebar state on page load
-            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-            if (isCollapsed && window.innerWidth > 768) {
-                body.classList.add('sidebar-collapsed');
-            }
-
-            // Animate active menu item on page load
-            const activeMenuItem = document.querySelector('.sidebar-menu a.active');
-            if (activeMenuItem) {
-                activeMenuItem.style.animation = 'none';
-                setTimeout(() => {
-                    activeMenuItem.style.animation = '';
-                }, 10);
-            }
-
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768) {
-                    sidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    body.classList.remove('sidebar-open');
-                }
-            });
-
-            // User Profile Dropdown Functionality
-            const userProfileBtn = document.getElementById('userProfileBtn');
-            const userDropdownMenu = document.getElementById('userDropdownMenu');
-            const mobileUserProfileBtn = document.getElementById('mobileUserProfileBtn');
-            const mobileUserDropdownMenu = document.getElementById('mobileUserDropdownMenu');
-
-            // Desktop dropdown
-            if (userProfileBtn && userDropdownMenu) {
-                userProfileBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    userProfileBtn.classList.toggle('active');
-                    userDropdownMenu.classList.toggle('show');
-
-                    // Close mobile dropdown if open
-                    if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                        mobileUserProfileBtn.classList.remove('active');
-                        mobileUserDropdownMenu.classList.remove('show');
-                    }
-                });
-            }
-
-            // Mobile dropdown
-            if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                mobileUserProfileBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    mobileUserProfileBtn.classList.toggle('active');
-                    mobileUserDropdownMenu.classList.toggle('show');
-
-                    // Close desktop dropdown if open
-                    if (userProfileBtn && userDropdownMenu) {
-                        userProfileBtn.classList.remove('active');
-                        userDropdownMenu.classList.remove('show');
-                    }
-                });
-            }
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (userProfileBtn && userDropdownMenu) {
-                    if (!userProfileBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
-                        userProfileBtn.classList.remove('active');
-                        userDropdownMenu.classList.remove('show');
-                    }
-                }
-
-                if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                    if (!mobileUserProfileBtn.contains(e.target) && !mobileUserDropdownMenu.contains(e.target)) {
-                        mobileUserProfileBtn.classList.remove('active');
-                        mobileUserDropdownMenu.classList.remove('show');
-                    }
-                }
-            });
-
-            // Close dropdown when pressing Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    if (userProfileBtn && userDropdownMenu) {
-                        userProfileBtn.classList.remove('active');
-                        userDropdownMenu.classList.remove('show');
-                    }
-                    if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                        mobileUserProfileBtn.classList.remove('active');
-                        mobileUserDropdownMenu.classList.remove('show');
-                    }
-                }
-            });
         });
     </script>
+
+    <?php include '../includes/sidebar_scripts.php'; ?>
 </body>
 </html>
