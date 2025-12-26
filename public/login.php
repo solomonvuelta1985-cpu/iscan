@@ -41,470 +41,575 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Civil Registry Records Management System</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* --- 1. Reset & Layout --- */
-        :root {
-            --bg-color: #e0e5ec;
-            --primary: #0d6efd;
-            --secondary: #6c757d;
-            --white: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.2);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        :root {
+            --primary: #0d6efd;
+            --primary-hover: #0b5ed7;
+            --success: #198754;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #0dcaf0;
+            --gray-50: #f8f9fa;
+            --gray-100: #f1f3f5;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            --white: #ffffff;
+        }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--gray-100);
             min-height: 100vh;
-            background: #dfe6e9;
-        }
-
-        .login-card {
             display: flex;
-            width: 950px;
-            max-width: 95%;
-            height: 600px;
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--gray-900);
         }
 
-        /* --- 2. Left Panel (The 3D Stage) --- */
-        .left-panel {
-            flex: 1.2;
-            background: linear-gradient(135deg, #051f3a, #0d3a5f);
+        .login-container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            min-height: 650px;
+        }
+
+        /* Left Panel - Information */
+        .info-panel {
+            background: #051f3a;
+            padding: 60px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            color: var(--white);
             position: relative;
-            overflow: hidden;
-            perspective: 800px;
         }
 
-        .left-logo {
-            width: 80px;
-            height: 80px;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
-        }
-
-        .stage-header {
+        .info-panel::before {
+            content: '';
             position: absolute;
-            top: 35px;
+            top: 0;
             left: 0;
             right: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            z-index: 10;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
+            opacity: 0.5;
         }
 
-        .stage-title {
-            color: rgba(255,255,255,0.9);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .scene-container {
-            width: 100%;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .logo-section {
             position: relative;
+            z-index: 1;
+            margin-bottom: 40px;
         }
 
-        /* Shared Scene Styles */
-        .scene {
-            display: none;
-            flex-direction: column;
+        .logo-container {
+            width: 90px;
+            height: 90px;
+            background: var(--white);
+            border-radius: 20px;
+            display: flex;
             align-items: center;
             justify-content: center;
+            padding: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 24px;
+        }
+
+        .logo-container img {
             width: 100%;
             height: 100%;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-
-        .scene.active {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .caption {
-            margin-top: 50px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-shadow: 0 5px 10px rgba(0,0,0,0.3);
-        }
-
-        /* --- 3. GIF Animation Container --- */
-        .gif-container {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .gif-image {
-            width: 150px;
-            height: 150px;
             object-fit: contain;
-            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
-            animation: smoothFloat 3s ease-in-out infinite;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Smooth floating animation */
-        @keyframes smoothFloat {
-            0%, 100% {
-                transform: translateY(0px) scale(1);
-                filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
-            }
-            50% {
-                transform: translateY(-15px) scale(1.05);
-                filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
-            }
+        .system-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            color: var(--white);
         }
 
-        /* Glow effect for GIFs */
-        .gif-glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
-            animation: glowPulse 3s ease-in-out infinite;
-            pointer-events: none;
+        .system-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            line-height: 1.5;
         }
 
-        @keyframes glowPulse {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(0.8);
-            }
-            50% {
-                opacity: 0.6;
-                transform: scale(1.1);
-            }
+        .features-list {
+            position: relative;
+            z-index: 1;
+            margin-top: 50px;
+            list-style: none;
         }
 
-        /* --- Right Panel (Form) --- */
-        .right-panel {
-            flex: 1;
-            padding: 60px;
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon i {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .feature-content h4 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--white);
+        }
+
+        .feature-content p {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        /* Right Panel - Login Form */
+        .form-panel {
+            padding: 60px 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;
         }
 
-        .header h1 { font-size: 2.2rem; color: #2d3436; margin-bottom: 10px; }
-        .header p { color: #636e72; margin-bottom: 40px; }
+        .form-header {
+            margin-bottom: 40px;
+        }
 
-        .input-group { position: relative; margin-bottom: 25px; }
-        .input-group label {
-            position: absolute; left: 15px; top: -10px; background: white; padding: 0 5px;
-            font-size: 0.85rem; color: #0d6efd; font-weight: 600; z-index: 3;
+        .form-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 8px;
         }
-        .input-group input {
-            width: 100%; padding: 15px; border: 2px solid #e0e5ec; border-radius: 10px; font-size: 1rem; transition: 0.3s;
+
+        .form-header p {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
         }
-        .input-group input:focus {
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.5;
+            border: 1px solid;
+        }
+
+        .alert-danger {
+            background-color: #fff5f5;
+            color: #c53030;
+            border-color: #feb2b2;
+        }
+
+        .alert-danger i {
+            color: #fc8181;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert-info {
+            background-color: #f0f9ff;
+            color: #075985;
+            border-color: #bae6fd;
+        }
+
+        .alert-info i {
+            color: #0ea5e9;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .login-form {
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 0.9375rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 10px;
+            background-color: var(--white);
+            color: var(--gray-900);
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-control:hover {
+            border-color: var(--gray-400);
+        }
+
+        .form-control:focus {
             outline: none;
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--gray-500);
         }
 
         .password-wrapper {
             position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .password-wrapper input {
-            padding-right: 50px !important;
         }
 
         .password-toggle {
             position: absolute;
             right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             background: none;
             border: none;
-            color: #636e72;
+            color: var(--gray-500);
             cursor: pointer;
-            padding: 8px 10px;
-            transition: color 0.3s;
+            padding: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2;
+            transition: color 0.2s ease;
         }
 
         .password-toggle:hover {
-            color: #0d6efd;
+            color: var(--primary);
         }
 
-        .btn-login {
+        .password-wrapper .form-control {
+            padding-right: 48px;
+        }
+
+        .btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(to right, #0d6efd, #0b5ed7);
-            color: white;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
             border: none;
             border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
-            margin-top: 10px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
         }
 
-        .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
         }
 
-        .btn-login:disabled {
-            opacity: 0.7;
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background-color: var(--gray-400);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
-        .alert {
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .alert-danger {
-            background: #fee;
-            color: #c33;
-            border: 1px solid #fcc;
-        }
-
-        .alert-success {
-            background: #efe;
-            color: #3c3;
-            border: 1px solid #cfc;
-        }
-
-        .alert-info {
-            background: #e8f4fd;
-            color: #0c5460;
-            border: 1px solid #b8daff;
+        .form-footer {
+            text-align: center;
+            margin-top: 24px;
         }
 
         .default-creds {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #95a5a6;
+            padding: 16px;
+            background-color: var(--gray-50);
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .default-creds p {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            margin-bottom: 4px;
         }
 
         .default-creds strong {
-            color: #e74c3c;
+            color: var(--danger);
+            font-weight: 600;
         }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .login-card {
-                flex-direction: column;
-                height: auto;
-                width: 90%;
+        .default-creds small {
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--gray-300);
+        }
+
+        .divider::before {
+            margin-right: 12px;
+        }
+
+        .divider::after {
+            margin-left: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 500px;
             }
 
-            .left-panel {
-                min-height: 300px;
+            .info-panel {
+                display: none;
             }
 
-            .right-panel {
+            .form-panel {
                 padding: 40px 30px;
             }
 
-            .left-logo {
-                width: 50px;
-                height: 50px;
+            .form-header h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
             }
 
-            .stage-header {
-                flex-direction: column;
-                gap: 10px;
-                top: 20px;
+            .form-panel {
+                padding: 32px 24px;
             }
+
+            .form-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-control {
+                padding: 11px 14px;
+                font-size: 0.875rem;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9375rem;
+            }
+        }
+
+        /* Loading Spinner */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
         }
     </style>
 </head>
 <body>
-
-    <div class="login-card">
-
-        <!-- LEFT: 3D Animation Carousel -->
-        <div class="left-panel">
-            <div class="stage-header">
-                <img src="../assets/img/LOGO1.png" alt="Baggao Logo" class="left-logo">
-                <div class="stage-title">Civil Registry System</div>
+    <div class="login-container">
+        <!-- Left Panel - Information -->
+        <div class="info-panel">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <img src="../assets/img/LOGO1.png" alt="Baggao Logo">
+                </div>
+                <h2 class="system-name">Civil Registry Records Management System</h2>
+                <p class="system-subtitle">Lalawigan ng Cagayan - Bayan ng Baggao</p>
             </div>
 
-            <div class="scene-container">
-
-                <!-- 1. Birth Certificate -->
-                <div class="scene active">
-                    <div class="gif-container">
-                        <div class="gif-glow"></div>
-                        <img src="../assets/img/mother.gif" alt="Birth Certificate" class="gif-image">
+            <ul class="features-list">
+                <li class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="file-check" width="20" height="20"></i>
                     </div>
-                    <div class="caption">Birth Certificate</div>
-                </div>
-
-                <!-- 2. Marriage Certificate -->
-                <div class="scene">
-                    <div class="gif-container">
-                        <div class="gif-glow"></div>
-                        <img src="../assets/img/wedding.gif" alt="Marriage Certificate" class="gif-image">
+                    <div class="feature-content">
+                        <h4>Digital Records</h4>
+                        <p>Manage birth, marriage, and death certificates digitally</p>
                     </div>
-                    <div class="caption">Marriage Certificate</div>
-                </div>
-
-                <!-- 3. Record Search -->
-                <div class="scene">
-                    <div class="gif-container">
-                        <div class="gif-glow"></div>
-                        <img src="../assets/img/search.gif" alt="Searching Records" class="gif-image">
+                </li>
+                <li class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="shield-check" width="20" height="20"></i>
                     </div>
-                    <div class="caption">Searching Records</div>
-                </div>
-
-                <!-- 4. Death Certificate -->
-                <div class="scene">
-                    <div class="gif-container">
-                        <div class="gif-glow"></div>
-                        <img src="../assets/img/inheritance.gif" alt="Death Certificate" class="gif-image">
+                    <div class="feature-content">
+                        <h4>Secure & Reliable</h4>
+                        <p>Protected with industry-standard security measures</p>
                     </div>
-                    <div class="caption">Death Certificate</div>
-                </div>
-
-                <!-- 5. Certificate Printing -->
-                <div class="scene">
-                    <div class="gif-container">
-                        <div class="gif-glow"></div>
-                        <img src="../assets/img/document.gif" alt="Issuing Certificate" class="gif-image">
+                </li>
+                <li class="feature-item">
+                    <div class="feature-icon">
+                        <i data-lucide="zap" width="20" height="20"></i>
                     </div>
-                    <div class="caption">Issuing Certificate</div>
-                </div>
-
-            </div>
+                    <div class="feature-content">
+                        <h4>Fast Processing</h4>
+                        <p>Quick certificate issuance and record retrieval</p>
+                    </div>
+                </li>
+            </ul>
         </div>
 
-        <!-- RIGHT: Login Form -->
-        <div class="right-panel">
-            <div class="header">
+        <!-- Right Panel - Login Form -->
+        <div class="form-panel">
+            <div class="form-header">
                 <h1>Welcome Back</h1>
-                <p>Please enter your credentials to access the Civil Registry system.</p>
+                <p>Please sign in to access the system</p>
             </div>
 
             <?php if ($error): ?>
                 <div class="alert alert-danger">
-                    <i data-lucide="alert-circle"></i>
+                    <i data-lucide="alert-circle" width="20" height="20"></i>
                     <span><?php echo htmlspecialchars($error); ?></span>
                 </div>
             <?php endif; ?>
 
-            <div class="alert alert-info">
-                <i data-lucide="info"></i>
-                <div>
-                    <strong>Security Notice:</strong> For your protection, you will be automatically logged out after <strong>30 minutes</strong> of inactivity.
+            <form method="POST" action="" id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-control"
+                        placeholder="Enter your username"
+                        value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
+                        required
+                        autofocus
+                    >
                 </div>
-            </div>
 
-            <form method="POST" action="" id="loginForm">
-                <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" name="username" id="username"
-                           value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
-                           placeholder="Enter your username" required autofocus>
-                </div>
-
-                <div class="input-group">
-                    <label>Password</label>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
                     <div class="password-wrapper">
-                        <input type="password" name="password" id="password"
-                               placeholder="Enter your password" required>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Enter your password"
+                            required
+                        >
                         <button type="button" class="password-toggle" id="togglePassword">
-                            <i data-lucide="eye"></i>
+                            <i data-lucide="eye" width="20" height="20"></i>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-login" id="loginBtn">
-                    <i data-lucide="log-in"></i> Sign In
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i data-lucide="log-in" width="20" height="20"></i>
+                    Sign In
                 </button>
             </form>
 
-            <div class="default-creds">
-                Default credentials: <strong>admin / admin123</strong><br>
-                <small>Change password after first login!</small>
+            <div class="divider">OR</div>
+
+            <div class="form-footer">
+                <div class="default-creds">
+                    <p>Default Credentials: <strong>admin / admin123</strong></p>
+                    <small>Please change your password after first login</small>
+                </div>
             </div>
         </div>
-
     </div>
 
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
 
-        // Cycle Animations
-        const scenes = document.querySelectorAll('.scene');
-        let index = 0;
-
-        function cycleScenes() {
-            scenes[index].classList.remove('active');
-            index = (index + 1) % scenes.length;
-            scenes[index].classList.add('active');
-        }
-
-        setInterval(cycleScenes, 2500);
-
         // Toggle password visibility
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const password = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+
             const icon = this.querySelector('i');
-
-            if (password.type === 'password') {
-                password.type = 'text';
-                icon.setAttribute('data-lucide', 'eye-off');
-            } else {
-                password.type = 'password';
-                icon.setAttribute('data-lucide', 'eye');
-            }
-
-            // Re-initialize Lucide icons to update the changed icon
+            icon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
             lucide.createIcons();
         });
 
-        // Disable button on submit
-        document.getElementById('loginForm').addEventListener('submit', function() {
-            const btn = document.getElementById('loginBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader"></i> Signing In...';
+        // Form submission with loading state
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+
+        loginForm.addEventListener('submit', function() {
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i data-lucide="loader-2" width="20" height="20" class="spinner"></i> Signing In...';
             lucide.createIcons();
         });
     </script>

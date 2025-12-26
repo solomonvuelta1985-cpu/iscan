@@ -1,6 +1,6 @@
 <?php
 /**
- * Certificate of Live Birth - Entry Form (PHP Version)
+ * Certificate of Marriage - Entry Form (PHP Version)
  * Includes database connectivity and server-side processing
  */
 
@@ -25,7 +25,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
     // Fetch record from database
     try {
-        $stmt = $pdo->prepare("SELECT * FROM certificate_of_live_birth WHERE id = :id AND status = 'Active'");
+        $stmt = $pdo->prepare("SELECT * FROM certificate_of_marriage WHERE id = :id AND status = 'Active'");
         $stmt->execute([':id' => $record_id]);
         $record = $stmt->fetch();
 
@@ -45,7 +45,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $edit_mode ? 'Edit' : 'New'; ?> Certificate of Live Birth - Entry Form</title>
+    <title><?php echo $edit_mode ? 'Edit' : 'New'; ?> Certificate of Marriage - Entry Form</title>
 
     <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,513 +101,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             background-color: #f5f5f5;
         }
 
-        /* ========================================
-           SIDEBAR & NAV VARS
-           ======================================== */
-        :root {
-            --sidebar-width: 260px;
-            --sidebar-collapsed-width: 72px;
-            --sidebar-bg: #051f3a;
-            --sidebar-item-hover: rgba(59, 130, 246, 0.1);
-            --sidebar-item-active: rgba(59, 130, 246, 0.2);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --accent-color: #3b82f6;
-        }
-
-        /* ========================================
-           MOBILE HEADER
-           ======================================== */
-        .mobile-header {
-            display: none;
-            background: var(--sidebar-bg);
-            color: var(--text-primary);
-            padding: 16px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1100;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
-        }
-
-        .mobile-header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .mobile-header h4 {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-
-        .mobile-header h4 [data-lucide] {
-            color: var(--accent-color);
-            margin-right: 10px;
-        }
-
-        #mobileSidebarToggle {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.25rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        #mobileSidebarToggle:hover {
-            background: rgba(59, 130, 246, 0.15);
-            transform: scale(1.05);
-        }
-
-        /* ========================================
-           SIDEBAR OVERLAY
-           ======================================== */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 999;
-            backdrop-filter: blur(2px);
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        /* ========================================
-           TOP NAVBAR (DESKTOP)
-           ======================================== */
-        .top-navbar {
-            position: fixed;
-            top: 0;
-            left: var(--sidebar-width);
-            right: 0;
-            height: 64px;
-            background: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            padding: 0;
-            z-index: 100;
-            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .sidebar-collapsed .top-navbar {
-            left: var(--sidebar-collapsed-width);
-        }
-
-        #sidebarCollapse {
-            background: none;
-            border: none;
-            font-size: 1.25rem;
-            color: #374151;
-            cursor: pointer;
-            padding: 10px;
-            margin-left: 20px;
-            border-radius: 8px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #sidebarCollapse:hover {
-            background: #f3f4f6;
-            color: var(--accent-color);
-            transform: scale(1.05);
-        }
-
-        .top-navbar-info {
-            margin-left: 16px;
-        }
-
-        .welcome-text {
-            color: #6b7280;
-            font-size: 13.5px;
-            font-weight: 500;
-        }
-
-        /* ========================================
-           USER PROFILE DROPDOWN
-           ======================================== */
-        .user-profile-dropdown {
-            margin-left: auto;
-            margin-right: 20px;
-            position: relative;
-        }
-
-        .user-profile-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 6px 12px 6px 6px;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .user-profile-btn:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .user-profile-btn:active,
-        .user-profile-btn.active {
-            background: #f3f4f6;
-            border-color: var(--accent-color);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-
-        .user-avatar.large {
-            width: 48px;
-            height: 48px;
-            font-size: 16px;
-        }
-
-        .user-profile-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
-        }
-
-        .user-name {
-            font-size: 13.5px;
-            font-weight: 600;
-            color: #111827;
-            line-height: 1.3;
-        }
-
-        .user-role {
-            font-size: 11.5px;
-            color: #6b7280;
-            line-height: 1.3;
-            text-transform: capitalize;
-        }
-
-        .dropdown-arrow {
-            color: #9ca3af;
-            transition: transform 0.2s ease;
-        }
-
-        .user-profile-btn.active .dropdown-arrow {
-            transform: rotate(180deg);
-        }
-
-        .user-dropdown-menu {
-            position: absolute;
-            top: calc(100% + 8px);
-            right: 0;
-            min-width: 280px;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px) scale(0.95);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-        }
-
-        .user-dropdown-menu.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-        }
-
-        .dropdown-header {
-            padding: 20px;
-        }
-
-        .dropdown-user-info {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .dropdown-user-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 2px;
-        }
-
-        .dropdown-user-email {
-            font-size: 12.5px;
-            color: #6b7280;
-            margin-bottom: 8px;
-        }
-
-        .dropdown-user-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            background: var(--accent-color);
-            color: #ffffff;
-            font-size: 10.5px;
-            font-weight: 600;
-            border-radius: 6px;
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: #e5e7eb;
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 20px;
-            color: #374151;
-            text-decoration: none;
-            font-size: 13.5px;
-            font-weight: 500;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 0 0 12px 12px;
-        }
-
-        .dropdown-item:hover {
-            background: #f9fafb;
-            color: #111827;
-            padding-left: 24px;
-        }
-
-        .dropdown-item.logout-item {
-            color: #dc2626;
-        }
-
-        .dropdown-item.logout-item:hover {
-            background: #fef2f2;
-            color: #b91c1c;
-        }
-
-        /* ========================================
-           SIDEBAR NAVIGATION
-           ======================================== */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--sidebar-bg);
-            color: var(--text-primary);
-            z-index: 1000;
-            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
-
-        .sidebar-collapsed .sidebar {
-            width: var(--sidebar-collapsed-width);
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            background: var(--sidebar-bg);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
-            min-height: 64px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar-header h4 {
-            margin: 0;
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar-header h4 [data-lucide] {
-            min-width: 28px;
-            color: var(--accent-color);
-        }
-
-        .sidebar-collapsed .sidebar-header h4 span {
-            display: none;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 12px 0;
-            margin: 0;
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        .sidebar-menu::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar-menu::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .sidebar-menu::-webkit-scrollbar-thumb {
-            background: rgba(148, 163, 184, 0.3);
-            border-radius: 3px;
-        }
-
-        .sidebar-menu li a {
-            display: flex;
-            align-items: center;
-            padding: 10px 16px;
-            margin: 2px 12px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 10px;
-            font-size: 13.5px;
-            font-weight: 500;
-            white-space: nowrap;
-            position: relative;
-        }
-
-        .sidebar-menu li a:hover {
-            background: var(--sidebar-item-hover);
-            color: var(--text-primary);
-            transform: translateX(3px);
-        }
-
-        .sidebar-menu li a.active {
-            background: var(--sidebar-item-active);
-            color: #b7ff9a;
-            font-weight: 600;
-            animation: menuItemActivate 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes menuItemActivate {
-            0% { background: transparent; transform: translateX(-4px); }
-            60% { transform: translateX(5px); }
-            100% { background: var(--sidebar-item-active); transform: translateX(0); }
-        }
-
-        .sidebar-menu li a.active::before {
-            content: '';
-            position: absolute;
-            left: -12px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 22px;
-            background: var(--accent-color);
-            border-radius: 0 4px 4px 0;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
-        }
-
-        .sidebar-menu li a [data-lucide] {
-            min-width: 28px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-menu li a:hover [data-lucide] {
-            transform: scale(1.08);
-        }
-
-        .sidebar-collapsed .sidebar-menu li a {
-            justify-content: center;
-            padding: 14px 10px;
-        }
-
-        .sidebar-collapsed .sidebar-menu li a span {
-            display: none;
-        }
-
-        .sidebar-collapsed .sidebar-menu li a.active::before {
-            left: -10px;
-        }
-
-        .sidebar-divider {
-            border-top: 1px solid rgba(148, 163, 184, 0.15);
-            margin: 12px 16px;
-        }
-
-        .sidebar-heading {
-            padding: 14px 20px 8px;
-            font-size: 10.5px;
-            text-transform: uppercase;
-            color: #64748b;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-        }
-
-        .sidebar-collapsed .sidebar-heading {
-            text-indent: -9999px;
-            padding: 8px 0;
-        }
-
-        /* Tooltips for collapsed sidebar */
-        .sidebar-collapsed .sidebar-menu li a::after {
-            content: attr(title);
-            position: absolute;
-            left: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #0f172a;
-            color: #f1f5f9;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
-            z-index: 1001;
-            margin-left: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        .sidebar-collapsed .sidebar-menu li a:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* ========================================
-           MAIN CONTENT
-           ======================================== */
-        .content {
-            margin-left: var(--sidebar-width);
-            padding: 0;
-            padding-top: 64px;
-            min-height: 100vh;
-            background: #ffffff;
-            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .sidebar-collapsed .content {
-            margin-left: var(--sidebar-collapsed-width);
-        }
 
         /* ========================================
            HEADER WITH LOGO
@@ -1238,76 +731,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         }
 
         @media (max-width: 768px) {
-            .mobile-header {
-                display: block;
-            }
-
-            .top-navbar {
-                display: none;
-            }
-
-            .sidebar {
-                transform: translateX(-100%);
-                width: 280px;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .sidebar-collapsed .sidebar {
-                width: 280px;
-            }
-
-            .content {
-                margin-left: 0;
-                padding: 0;
-                padding-top: 70px;
-                background: #ffffff;
-            }
-
-            .sidebar-collapsed .content {
-                margin-left: 0;
-            }
-
-            .page-container {
-                padding: 0;
-            }
-
-            /* Disable tooltips on mobile */
-            .sidebar-collapsed .sidebar-menu li a::after {
-                display: none;
-            }
-
-            /* Show text on mobile even in collapsed mode */
-            .sidebar-collapsed .sidebar-menu li a span,
-            .sidebar-collapsed .sidebar-header h4 span,
-            .sidebar-collapsed .sidebar-heading {
-                display: inline;
-                font-size: inherit;
-                text-indent: 0;
-            }
-
-            .sidebar-collapsed .sidebar-menu li a {
-                justify-content: flex-start;
-                padding: 11px 16px;
-                margin: 2px 12px;
-            }
-
-            /* User Profile Dropdown - Mobile adjustments */
-            .user-profile-info {
-                display: none;
-            }
-
-            .dropdown-arrow {
-                display: none;
-            }
-
-            .user-dropdown-menu {
-                min-width: 260px;
-                right: -8px;
-            }
-
             .system-header {
                 flex-direction: column;
                 text-align: center;
@@ -1409,159 +832,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
-    <div class="mobile-header">
-        <div class="mobile-header-content">
-            <div>
-                <h4><i data-lucide="file-badge"></i> Civil Registry</h4>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <!-- User Profile Dropdown (Mobile) -->
-                <div class="user-profile-dropdown">
-                    <button class="user-profile-btn" id="mobileUserProfileBtn" type="button">
-                        <div class="user-avatar">AU</div>
-                    </button>
-
-                    <div class="user-dropdown-menu" id="mobileUserDropdownMenu">
-                        <div class="dropdown-header">
-                            <div class="dropdown-user-info">
-                                <div class="user-avatar large">AU</div>
-                                <div>
-                                    <div class="dropdown-user-name">Admin User</div>
-                                    <div class="dropdown-user-email">admin</div>
-                                    <span class="dropdown-user-badge">ADMIN</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item logout-item">
-                            <i data-lucide="log-out"></i>
-                            <span>Logout</span>
-                        </a>
-                    </div>
-                </div>
-                <button type="button" id="mobileSidebarToggle">
-                    <i data-lucide="menu"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sidebar Overlay for Mobile -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h4><i data-lucide="file-badge"></i> <span>Civil Registry</span></h4>
-        </div>
-
-        <ul class="sidebar-menu">
-            <!-- Main Section -->
-            <li class="sidebar-heading">Overview</li>
-            <li>
-                <a href="../admin/dashboard.php" title="Dashboard">
-                    <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
-                </a>
-            </li>
-
-            <!-- Certificates Section -->
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-heading">Certificates</li>
-            <li>
-                <a href="certificate_of_live_birth.php" class="active" title="Birth Certificates">
-                    <i data-lucide="baby"></i> <span>Birth Certificates</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Marriage Certificates">
-                    <i data-lucide="heart"></i> <span>Marriage Certificates</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Death Certificates">
-                    <i data-lucide="cross"></i> <span>Death Certificates</span>
-                </a>
-            </li>
-
-            <!-- Records Section -->
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-heading">Management</li>
-            <li>
-                <a href="#" title="Search Records">
-                    <i data-lucide="file-search"></i> <span>Search Records</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Reports">
-                    <i data-lucide="bar-chart-3"></i> <span>Reports</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Archives">
-                    <i data-lucide="archive"></i> <span>Archives</span>
-                </a>
-            </li>
-
-            <!-- System Section -->
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-heading">System</li>
-            <li>
-                <a href="#" title="Users">
-                    <i data-lucide="users"></i> <span>Users</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" title="Settings">
-                    <i data-lucide="settings"></i> <span>Settings</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Top Navigation Bar (Desktop) -->
-    <div class="top-navbar" id="topNavbar">
-        <button type="button" id="sidebarCollapse" title="Toggle Sidebar">
-            <i data-lucide="menu"></i>
-        </button>
-        <div class="top-navbar-info">
-            <span class="welcome-text">Welcome, Admin User</span>
-        </div>
-
-        <!-- User Profile Dropdown -->
-        <div class="user-profile-dropdown">
-            <button class="user-profile-btn" id="userProfileBtn" type="button">
-                <div class="user-avatar">AU</div>
-                <div class="user-profile-info">
-                    <span class="user-name">Admin User</span>
-                    <span class="user-role">Administrator</span>
-                </div>
-                <i data-lucide="chevron-down" class="dropdown-arrow"></i>
-            </button>
-
-            <div class="user-dropdown-menu" id="userDropdownMenu">
-                <div class="dropdown-header">
-                    <div class="dropdown-user-info">
-                        <div class="user-avatar large">AU</div>
-                        <div>
-                            <div class="dropdown-user-name">Admin User</div>
-                            <div class="dropdown-user-email">admin</div>
-                            <span class="dropdown-user-badge">ADMIN</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item logout-item">
-                    <i data-lucide="log-out"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="content">
-        <div class="page-container">
+    <?php include '../includes/sidebar.php'; ?>
             <!-- System Header with Logo -->
             <div class="system-header">
                 <div class="system-logo">
@@ -1576,10 +847,10 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">
-                <i data-lucide="file-text"></i>
-                <?php echo $edit_mode ? 'Edit' : 'New'; ?> Certificate of Live Birth - Entry Form
+                <i data-lucide="heart"></i>
+                <?php echo $edit_mode ? 'Edit' : 'New'; ?> Certificate of Marriage - Entry Form
             </h1>
-            <p class="page-subtitle">Complete the form below to register a new birth certificate</p>
+            <p class="page-subtitle">Complete the form below to register a new marriage certificate</p>
         </div>
 
         <!-- Alert Messages -->
@@ -1626,7 +897,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                                 type="text"
                                 id="registry_no"
                                 name="registry_no"
-                                placeholder="Enter registry number (e.g., REG-2025-00001 or single digit)"
+                                placeholder="Enter registry number (e.g., REG-2025-00001)"
                                 value="<?php echo $edit_mode ? htmlspecialchars($record['registry_no']) : ''; ?>"
                             >
                             <span class="help-text">Optional - Can be any format including single digit numbers</span>
@@ -1644,285 +915,307 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                                 value="<?php echo $edit_mode ? date('Y-m-d', strtotime($record['date_of_registration'])) : ''; ?>"
                             >
                         </div>
-
-                        <!-- Child's Name -->
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="child_first_name">
-                                    Child's First Name <span class="required">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    id="child_first_name"
-                                    name="child_first_name"
-                                    required
-                                    placeholder="Enter child's first name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_first_name'] ?? '') : ''; ?>"
-                                >
-                            </div>
-
-                            <div class="form-group">
-                                <label for="child_middle_name">
-                                    Child's Middle Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="child_middle_name"
-                                    name="child_middle_name"
-                                    placeholder="Enter child's middle name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_middle_name'] ?? '') : ''; ?>"
-                                >
-                            </div>
-
-                            <div class="form-group">
-                                <label for="child_last_name">
-                                    Child's Last Name <span class="required">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    id="child_last_name"
-                                    name="child_last_name"
-                                    required
-                                    placeholder="Enter child's last name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_last_name'] ?? '') : ''; ?>"
-                                >
-                            </div>
-                        </div>
-
-                        <!-- Date of Birth -->
-                        <div class="form-group">
-                            <label for="child_date_of_birth">
-                                Child's Date of Birth <span class="required">*</span>
-                            </label>
-                            <input
-                                type="date"
-                                id="child_date_of_birth"
-                                name="child_date_of_birth"
-                                required
-                                value="<?php echo $edit_mode ? htmlspecialchars($record['child_date_of_birth'] ?? '') : ''; ?>"
-                            >
-                        </div>
-
-                        <!-- Place of Birth -->
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="child_place_of_birth">
-                                    Barangay/Hospital <span class="required">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    id="child_place_of_birth"
-                                    name="child_place_of_birth"
-                                    required
-                                    placeholder="Enter barangay or hospital name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['child_place_of_birth'] ?? '') : ''; ?>"
-                                >
-                                <span class="help-text">Enter the specific barangay or hospital where the child was born</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="municipality">
-                                    Municipality
-                                </label>
-                                <input
-                                    type="text"
-                                    id="municipality"
-                                    name="municipality"
-                                    value="Baggao"
-                                    readonly
-                                    disabled
-                                    style="background-color: #e9ecef; cursor: not-allowed;"
-                                >
-                            </div>
-
-                            <div class="form-group">
-                                <label for="province">
-                                    Province
-                                </label>
-                                <input
-                                    type="text"
-                                    id="province"
-                                    name="province"
-                                    value="Cagayan"
-                                    readonly
-                                    disabled
-                                    style="background-color: #e9ecef; cursor: not-allowed;"
-                                >
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- Birth Information Section -->
-                    <div class="form-section">
-                        <div class="section-header">
-                            <h2 class="section-title">
-                                <i data-lucide="baby"></i>
-                                Birth Information
-                            </h2>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="type_of_birth">
-                                    Type of Birth <span class="required">*</span>
-                                </label>
-                                <select id="type_of_birth" name="type_of_birth" required>
-                                    <option value="">-- Select Type --</option>
-                                    <?php
-                                    $birth_types = ['Single', 'Twin', 'Triplets', 'Quadruplets', 'Other'];
-                                    foreach ($birth_types as $type) {
-                                        $selected = ($edit_mode && $record['type_of_birth'] === $type) ? 'selected' : '';
-                                        echo "<option value='$type' $selected>$type</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group" id="type_of_birth_other_group" style="display: <?php echo ($edit_mode && $record['type_of_birth'] === 'Other') ? 'block' : 'none'; ?>;">
-                                <label for="type_of_birth_other">
-                                    Specify Other Type
-                                </label>
-                                <input
-                                    type="text"
-                                    id="type_of_birth_other"
-                                    name="type_of_birth_other"
-                                    placeholder="Please specify"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['type_of_birth_other'] ?? '') : ''; ?>"
-                                >
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="birth_order">
-                                    Birth Order
-                                </label>
-                                <select id="birth_order" name="birth_order">
-                                    <option value="">-- Select Order --</option>
-                                    <?php
-                                    $birth_orders = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', 'Other'];
-                                    foreach ($birth_orders as $order) {
-                                        $selected = ($edit_mode && $record['birth_order'] === $order) ? 'selected' : '';
-                                        echo "<option value='$order' $selected>$order</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group" id="birth_order_other_group" style="display: <?php echo ($edit_mode && $record['birth_order'] === 'Other') ? 'block' : 'none'; ?>;">
-                                <label for="birth_order_other">
-                                    Specify Other Order
-                                </label>
-                                <input
-                                    type="text"
-                                    id="birth_order_other"
-                                    name="birth_order_other"
-                                    placeholder="Please specify"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['birth_order_other'] ?? '') : ''; ?>"
-                                >
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Mother's Information Section -->
+                    <!-- Husband's Information Section -->
                     <div class="form-section">
                         <div class="section-header">
                             <h2 class="section-title">
                                 <i data-lucide="user"></i>
-                                Mother's Maiden Name
+                                Husband's Information
                             </h2>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="mother_first_name">
+                                <label for="husband_first_name">
                                     First Name <span class="required">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    id="mother_first_name"
-                                    name="mother_first_name"
+                                    id="husband_first_name"
+                                    name="husband_first_name"
                                     required
                                     placeholder="Enter first name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['mother_first_name']) : ''; ?>"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_first_name']) : ''; ?>"
                                 >
                             </div>
 
                             <div class="form-group">
-                                <label for="mother_middle_name">
+                                <label for="husband_middle_name">
                                     Middle Name
                                 </label>
                                 <input
                                     type="text"
-                                    id="mother_middle_name"
-                                    name="mother_middle_name"
+                                    id="husband_middle_name"
+                                    name="husband_middle_name"
                                     placeholder="Enter middle name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['mother_middle_name'] ?? '') : ''; ?>"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_middle_name'] ?? '') : ''; ?>"
                                 >
                             </div>
 
                             <div class="form-group">
-                                <label for="mother_last_name">
+                                <label for="husband_last_name">
                                     Last Name <span class="required">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    id="mother_last_name"
-                                    name="mother_last_name"
+                                    id="husband_last_name"
+                                    name="husband_last_name"
                                     required
                                     placeholder="Enter last name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['mother_last_name']) : ''; ?>"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_last_name']) : ''; ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="husband_date_of_birth">
+                                    Date of Birth <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="date"
+                                    id="husband_date_of_birth"
+                                    name="husband_date_of_birth"
+                                    required
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_date_of_birth']) : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="husband_place_of_birth">
+                                    Place of Birth <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="husband_place_of_birth"
+                                    name="husband_place_of_birth"
+                                    required
+                                    placeholder="Enter place of birth"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_place_of_birth']) : ''; ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="husband_residence">
+                                Residence <span class="required">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="husband_residence"
+                                name="husband_residence"
+                                required
+                                placeholder="Enter complete address"
+                                value="<?php echo $edit_mode ? htmlspecialchars($record['husband_residence']) : ''; ?>"
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="husband_father_name">
+                                    Name of Father
+                                </label>
+                                <input
+                                    type="text"
+                                    id="husband_father_name"
+                                    name="husband_father_name"
+                                    placeholder="Enter father's full name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_father_name'] ?? '') : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="husband_father_residence">
+                                    Father's Residence
+                                </label>
+                                <input
+                                    type="text"
+                                    id="husband_father_residence"
+                                    name="husband_father_residence"
+                                    placeholder="Enter father's address"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_father_residence'] ?? '') : ''; ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="husband_mother_name">
+                                    Name of Mother
+                                </label>
+                                <input
+                                    type="text"
+                                    id="husband_mother_name"
+                                    name="husband_mother_name"
+                                    placeholder="Enter mother's full name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_mother_name'] ?? '') : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="husband_mother_residence">
+                                    Mother's Residence
+                                </label>
+                                <input
+                                    type="text"
+                                    id="husband_mother_residence"
+                                    name="husband_mother_residence"
+                                    placeholder="Enter mother's address"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['husband_mother_residence'] ?? '') : ''; ?>"
                                 >
                             </div>
                         </div>
                     </div>
 
-                    <!-- Father's Information Section -->
+                    <!-- Wife's Information Section -->
                     <div class="form-section">
                         <div class="section-header">
                             <h2 class="section-title">
                                 <i data-lucide="user-check"></i>
-                                Father's Name
+                                Wife's Information
                             </h2>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="father_first_name">
-                                    First Name
+                                <label for="wife_first_name">
+                                    First Name <span class="required">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    id="father_first_name"
-                                    name="father_first_name"
+                                    id="wife_first_name"
+                                    name="wife_first_name"
+                                    required
                                     placeholder="Enter first name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['father_first_name'] ?? '') : ''; ?>"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_first_name']) : ''; ?>"
                                 >
                             </div>
 
                             <div class="form-group">
-                                <label for="father_middle_name">
+                                <label for="wife_middle_name">
                                     Middle Name
                                 </label>
                                 <input
                                     type="text"
-                                    id="father_middle_name"
-                                    name="father_middle_name"
+                                    id="wife_middle_name"
+                                    name="wife_middle_name"
                                     placeholder="Enter middle name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['father_middle_name'] ?? '') : ''; ?>"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_middle_name'] ?? '') : ''; ?>"
                                 >
                             </div>
 
                             <div class="form-group">
-                                <label for="father_last_name">
-                                    Last Name
+                                <label for="wife_last_name">
+                                    Last Name <span class="required">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    id="father_last_name"
-                                    name="father_last_name"
-                                    placeholder="Enter last name"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['father_last_name'] ?? '') : ''; ?>"
+                                    id="wife_last_name"
+                                    name="wife_last_name"
+                                    required
+                                    placeholder="Enter maiden last name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_last_name']) : ''; ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="wife_date_of_birth">
+                                    Date of Birth <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="date"
+                                    id="wife_date_of_birth"
+                                    name="wife_date_of_birth"
+                                    required
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_date_of_birth']) : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="wife_place_of_birth">
+                                    Place of Birth <span class="required">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    id="wife_place_of_birth"
+                                    name="wife_place_of_birth"
+                                    required
+                                    placeholder="Enter place of birth"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_place_of_birth']) : ''; ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="wife_residence">
+                                Residence <span class="required">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="wife_residence"
+                                name="wife_residence"
+                                required
+                                placeholder="Enter complete address"
+                                value="<?php echo $edit_mode ? htmlspecialchars($record['wife_residence']) : ''; ?>"
+                            >
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="wife_father_name">
+                                    Name of Father
+                                </label>
+                                <input
+                                    type="text"
+                                    id="wife_father_name"
+                                    name="wife_father_name"
+                                    placeholder="Enter father's full name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_father_name'] ?? '') : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="wife_father_residence">
+                                    Father's Residence
+                                </label>
+                                <input
+                                    type="text"
+                                    id="wife_father_residence"
+                                    name="wife_father_residence"
+                                    placeholder="Enter father's address"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_father_residence'] ?? '') : ''; ?>"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="wife_mother_name">
+                                    Name of Mother
+                                </label>
+                                <input
+                                    type="text"
+                                    id="wife_mother_name"
+                                    name="wife_mother_name"
+                                    placeholder="Enter mother's full name"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_mother_name'] ?? '') : ''; ?>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="wife_mother_residence">
+                                    Mother's Residence
+                                </label>
+                                <input
+                                    type="text"
+                                    id="wife_mother_residence"
+                                    name="wife_mother_residence"
+                                    placeholder="Enter mother's address"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['wife_mother_residence'] ?? '') : ''; ?>"
                                 >
                             </div>
                         </div>
@@ -1940,26 +1233,28 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="date_of_marriage">
-                                    Date of Marriage
+                                    Date of Marriage <span class="required">*</span>
                                 </label>
                                 <input
                                     type="date"
                                     id="date_of_marriage"
                                     name="date_of_marriage"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['date_of_marriage'] ?? '') : ''; ?>"
+                                    required
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['date_of_marriage']) : ''; ?>"
                                 >
                             </div>
 
                             <div class="form-group">
                                 <label for="place_of_marriage">
-                                    Place of Marriage
+                                    Place of Marriage <span class="required">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     id="place_of_marriage"
                                     name="place_of_marriage"
+                                    required
                                     placeholder="Enter place of marriage"
-                                    value="<?php echo $edit_mode ? htmlspecialchars($record['place_of_marriage'] ?? '') : ''; ?>"
+                                    value="<?php echo $edit_mode ? htmlspecialchars($record['place_of_marriage']) : ''; ?>"
                                 >
                             </div>
                         </div>
@@ -2064,41 +1359,13 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             <i data-lucide="eye"></i>
         </button>
 
-        </div> <!-- Close page-container -->
-    </div> <!-- Close content -->
+        </div> <!-- Close dashboard-container -->
+    </div> <!-- Close main-content -->
+</div> <!-- Close page-wrapper -->
 
     <!-- JavaScript -->
     <script>
         const editMode = <?php echo $edit_mode ? 'true' : 'false'; ?>;
-
-        // Show/hide "Other" input fields based on dropdown selection
-        document.getElementById('type_of_birth').addEventListener('change', function() {
-            const otherGroup = document.getElementById('type_of_birth_other_group');
-            const otherInput = document.getElementById('type_of_birth_other');
-
-            if (this.value === 'Other') {
-                otherGroup.style.display = 'block';
-                otherInput.required = true;
-            } else {
-                otherGroup.style.display = 'none';
-                otherInput.required = false;
-                otherInput.value = '';
-            }
-        });
-
-        document.getElementById('birth_order').addEventListener('change', function() {
-            const otherGroup = document.getElementById('birth_order_other_group');
-            const otherInput = document.getElementById('birth_order_other');
-
-            if (this.value === 'Other') {
-                otherGroup.style.display = 'block';
-                otherInput.required = true;
-            } else {
-                otherGroup.style.display = 'none';
-                otherInput.required = false;
-                otherInput.value = '';
-            }
-        });
 
         // PDF file preview
         document.getElementById('pdf_file').addEventListener('change', function(e) {
@@ -2160,7 +1427,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             const formData = new FormData(document.getElementById('certificateForm'));
             formData.append('add_new', addNew ? '1' : '0');
 
-            const apiEndpoint = editMode ? '../api/certificate_of_live_birth_update.php' : '../api/certificate_of_live_birth_save.php';
+            const apiEndpoint = editMode ? '../api/certificate_of_marriage_update.php' : '../api/certificate_of_marriage_save.php';
 
             fetch(apiEndpoint, {
                 method: 'POST',
@@ -2332,14 +1599,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                         scanStatus.classList.remove('hidden');
                         lucide.createIcons();
 
-                        // Check if scanner service is available
-                        // This will need to be replaced with actual scanner SDK integration
-                        // For now, this is a placeholder that shows how it would work
-
-                        // Option 1: Using Dynamic Web TWAIN (Commercial SDK)
-                        // Option 2: Using a local scanner service/bridge
-                        // Option 3: Using browser's getUserMedia with document scanner
-
                         const scannerAvailable = await checkScannerAvailability();
 
                         if (!scannerAvailable) {
@@ -2389,13 +1648,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
             // Check if scanner is available
             async function checkScannerAvailability() {
-                // TODO: Implement actual scanner detection
-                // This would connect to the scanner service/SDK
-
-                // For demonstration, check if scanner service is running
-                // You would replace this with actual scanner SDK calls
                 try {
-                    // Example: Check if local scanner service is running
                     const response = await fetch('http://localhost:18622/scanner/status', {
                         method: 'GET',
                         mode: 'cors'
@@ -2406,7 +1659,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                         return data.available && data.model.includes('DS-530');
                     }
 
-                    // If service is not available, show instructions
                     return false;
                 } catch (error) {
                     return false;
@@ -2415,11 +1667,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
             // Perform scan operation
             async function performScan() {
-                // TODO: Implement actual scanning logic
-                // This would use the scanner SDK (Dynamic Web TWAIN, etc.)
-
                 try {
-                    // Example: Call local scanner service
                     const response = await fetch('http://localhost:18622/scanner/scan', {
                         method: 'POST',
                         headers: {
@@ -2460,152 +1708,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                 }
             `;
             document.head.appendChild(style);
-
-            // Sidebar functionality
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const sidebarCollapse = document.getElementById('sidebarCollapse');
-            const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
-            const body = document.body;
-
-            // Desktop: Toggle sidebar collapse/expand
-            if (sidebarCollapse) {
-                sidebarCollapse.addEventListener('click', function() {
-                    body.classList.toggle('sidebar-collapsed');
-
-                    // Save state to localStorage
-                    const isCollapsed = body.classList.contains('sidebar-collapsed');
-                    localStorage.setItem('sidebarCollapsed', isCollapsed);
-                });
-            }
-
-            // Mobile: Toggle sidebar visibility
-            if (mobileSidebarToggle) {
-                mobileSidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                    sidebarOverlay.classList.toggle('active');
-                    body.classList.toggle('sidebar-open');
-                });
-            }
-
-            // Close sidebar when clicking overlay
-            if (sidebarOverlay) {
-                sidebarOverlay.addEventListener('click', function() {
-                    sidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    body.classList.remove('sidebar-open');
-                });
-            }
-
-            // Close mobile sidebar when clicking a menu link
-            document.querySelectorAll('.sidebar-menu a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // Add click animation
-                    this.style.transition = 'all 0.15s ease';
-                    this.style.transform = 'scale(0.96) translateX(3px)';
-
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-
-                    if (window.innerWidth <= 768) {
-                        sidebar.classList.remove('active');
-                        sidebarOverlay.classList.remove('active');
-                        body.classList.remove('sidebar-open');
-                    }
-                });
-            });
-
-            // Restore sidebar state on page load
-            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-            if (isCollapsed && window.innerWidth > 768) {
-                body.classList.add('sidebar-collapsed');
-            }
-
-            // Animate active menu item on page load
-            const activeMenuItem = document.querySelector('.sidebar-menu a.active');
-            if (activeMenuItem) {
-                activeMenuItem.style.animation = 'none';
-                setTimeout(() => {
-                    activeMenuItem.style.animation = '';
-                }, 10);
-            }
-
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768) {
-                    sidebar.classList.remove('active');
-                    sidebarOverlay.classList.remove('active');
-                    body.classList.remove('sidebar-open');
-                }
-            });
-
-            // User Profile Dropdown Functionality
-            const userProfileBtn = document.getElementById('userProfileBtn');
-            const userDropdownMenu = document.getElementById('userDropdownMenu');
-            const mobileUserProfileBtn = document.getElementById('mobileUserProfileBtn');
-            const mobileUserDropdownMenu = document.getElementById('mobileUserDropdownMenu');
-
-            // Desktop dropdown
-            if (userProfileBtn && userDropdownMenu) {
-                userProfileBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    userProfileBtn.classList.toggle('active');
-                    userDropdownMenu.classList.toggle('show');
-
-                    // Close mobile dropdown if open
-                    if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                        mobileUserProfileBtn.classList.remove('active');
-                        mobileUserDropdownMenu.classList.remove('show');
-                    }
-                });
-            }
-
-            // Mobile dropdown
-            if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                mobileUserProfileBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    mobileUserProfileBtn.classList.toggle('active');
-                    mobileUserDropdownMenu.classList.toggle('show');
-
-                    // Close desktop dropdown if open
-                    if (userProfileBtn && userDropdownMenu) {
-                        userProfileBtn.classList.remove('active');
-                        userDropdownMenu.classList.remove('show');
-                    }
-                });
-            }
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (userProfileBtn && userDropdownMenu) {
-                    if (!userProfileBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
-                        userProfileBtn.classList.remove('active');
-                        userDropdownMenu.classList.remove('show');
-                    }
-                }
-
-                if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                    if (!mobileUserProfileBtn.contains(e.target) && !mobileUserDropdownMenu.contains(e.target)) {
-                        mobileUserProfileBtn.classList.remove('active');
-                        mobileUserDropdownMenu.classList.remove('show');
-                    }
-                }
-            });
-
-            // Close dropdown when pressing Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    if (userProfileBtn && userDropdownMenu) {
-                        userProfileBtn.classList.remove('active');
-                        userDropdownMenu.classList.remove('show');
-                    }
-                    if (mobileUserProfileBtn && mobileUserDropdownMenu) {
-                        mobileUserProfileBtn.classList.remove('active');
-                        mobileUserDropdownMenu.classList.remove('show');
-                    }
-                }
-            });
         });
     </script>
 </body>
